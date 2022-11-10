@@ -107,7 +107,7 @@ impl DataType {
             f.add_arg("s@".to_string(), format!("{}_t", self.name));
 
             f.add_body(Term::fn_apply(
-                format!("{}", field.name),
+                field.name.to_string(),
                 vec![Term::ident("s@".to_string())],
             ));
 
@@ -133,7 +133,7 @@ impl DataType {
                 }
             }
 
-            f.add_body(Term::fn_apply(format!("{}", self.name), args));
+            f.add_body(Term::fn_apply(self.name.to_string(), args));
 
             smt.function(f);
         }

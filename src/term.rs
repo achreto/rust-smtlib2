@@ -28,6 +28,8 @@
 use std::fmt::{self, Write};
 use std::hash::Hash;
 
+use std::ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Shl, Shr, Sub};
+
 use super::Formatter;
 
 // a numeric literal <numeral>
@@ -373,14 +375,14 @@ impl Term {
     }
 
     pub fn is_literal(&self) -> bool {
-        match self {
+        matches!(
+            self,
             Term::Numeral(_)
-            // | Term::Decimal(_)
-            | Term::String(_)
-            | Term::Binary(_)
-            | Term::Identifier(_) => true,
-            _ => false,
-        }
+                 // | Term::Decimal(_)
+                 | Term::String(_)
+                 | Term::Binary(_)
+                 | Term::Identifier(_)
+        )
     }
 
     /// Formats the variant using the given formatter.
@@ -503,17 +505,39 @@ impl fmt::Display for Term {
     }
 }
 
-use std::ops::Add;
-use std::ops::BitAnd;
-use std::ops::BitOr;
-use std::ops::BitXor;
-use std::ops::Div;
-use std::ops::Mul;
-use std::ops::Neg;
-use std::ops::Not;
-use std::ops::Shl;
-use std::ops::Shr;
-use std::ops::Sub;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+impl From<u64> for Term {
+    fn from(n: u64) -> Self {
+        Term::Numeral(n)
+    }
+}
+
+impl From<usize> for Term {
+    fn from(n: usize) -> Self {
+        Term::Numeral(n as u64)
+    }
+}
+
+impl From<&str> for Term {
+    fn from(n: &str) -> Self {
+        Term::Identifier(n.to_string())
+    }
+}
+
+impl From<String> for Term {
+    fn from(n: String) -> Self {
+        Term::Identifier(n)
+    }
+}
+
+impl From<bool> for Term {
+    fn from(n: bool) -> Self {
+        Term::Binary(n)
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Arithmetic Operations: + - * /

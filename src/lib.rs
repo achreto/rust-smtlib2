@@ -119,7 +119,7 @@ impl Smt2File {
 
     // formats the current context into smtlib2 syntax
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
-        if self.doc.len() > 0 {
+        if !self.doc.is_empty() {
             write!(fmt, "; {}\n\n\n", self.doc)?;
         }
 

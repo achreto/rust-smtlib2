@@ -359,3 +359,9 @@ impl fmt::Display for Smt2Context {
         write!(f, "{}", ret)
     }
 }
+
+impl Default for Smt2Context {
+    fn default() -> Self {
+        Self::new()
+    }
+}
