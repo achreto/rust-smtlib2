@@ -502,3 +502,126 @@ impl fmt::Display for Term {
         write!(f, "{}", ret)
     }
 }
+
+use std::ops::Add;
+use std::ops::BitAnd;
+use std::ops::BitOr;
+use std::ops::BitXor;
+use std::ops::Div;
+use std::ops::Mul;
+use std::ops::Neg;
+use std::ops::Not;
+use std::ops::Shl;
+use std::ops::Shr;
+use std::ops::Sub;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Arithmetic Operations: + - * /
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+impl Add for Term {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        Term::bvadd(self, other)
+    }
+}
+
+impl Sub for Term {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self::Output {
+        Term::bvsub(self, other)
+    }
+}
+
+impl Div for Term {
+    // The division of rational numbers is a closed operation.
+    type Output = Self;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        Term::bvdiv(self, rhs)
+    }
+}
+
+impl Mul for Term {
+    // The multiplication of rational numbers is a closed operation.
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self {
+        Term::bvmul(self, rhs)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Bitwise Operations: & | ^ -
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+impl BitAnd for Term {
+    type Output = Self;
+
+    // rhs is the "right-hand side" of the expression `a & b`
+    fn bitand(self, rhs: Self) -> Self::Output {
+        Term::bvand(self, rhs)
+    }
+}
+
+impl BitOr for Term {
+    type Output = Self;
+
+    // rhs is the "right-hand side" of the expression `a | b`
+    fn bitor(self, rhs: Self) -> Self::Output {
+        Term::bvor(self, rhs)
+    }
+}
+
+impl BitXor for Term {
+    type Output = Self;
+
+    // rhs is the "right-hand side" of the expression `a ^ b`
+    fn bitxor(self, rhs: Self) -> Self::Output {
+        Term::bvxor(self, rhs)
+    }
+}
+
+impl Neg for Term {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Term::bvnot(self)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shifts
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+impl Shl<Term> for Term {
+    type Output = Self;
+
+    fn shl(self, rhs: Self) -> Self::Output {
+        Term::bvshl(self, rhs)
+    }
+}
+
+impl Shr<Term> for Term {
+    type Output = Self;
+
+    fn shr(self, rhs: Self) -> Self::Output {
+        Term::bvshr(self, rhs)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Logic Operations
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+impl Not for Term {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        Term::lnot(self)
+    }
+}
+
+// Want: operator overloading for comparisons
