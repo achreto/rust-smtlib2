@@ -38,7 +38,7 @@ use super::{SortedVar, Term};
 /// ; data type
 /// (declare-fun x () Bool)
 ///
-#[derive(Hash)]
+#[derive(Hash, PartialEq, Eq)]
 pub struct Function {
     /// the name of the datatype
     name: String,

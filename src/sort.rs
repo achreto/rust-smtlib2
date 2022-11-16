@@ -31,7 +31,7 @@ use std::hash::Hash;
 
 use super::Formatter;
 
-#[derive(Hash)]
+#[derive(Hash, PartialEq, Eq)]
 pub struct SortDecl {
     pub name: String,
     pub arity: usize,
@@ -56,7 +56,7 @@ impl fmt::Display for SortDecl {
     }
 }
 
-#[derive(Hash)]
+#[derive(Hash, PartialEq, Eq)]
 pub struct SortDef {
     pub name: String,
     pub params: Vec<String>,
@@ -95,7 +95,7 @@ impl fmt::Display for SortDef {
 }
 
 /// prop literals
-#[derive(Hash)]
+#[derive(Hash, PartialEq, Eq)]
 pub enum Sort {
     Declare(SortDecl),
     Define(SortDef),

@@ -32,7 +32,7 @@ use crate::{Function, Smt2Context, Term};
 
 use super::Formatter;
 
-#[derive(Hash)]
+#[derive(Hash, PartialEq, Eq)]
 struct DatatTypeField {
     name: String,
     ty: String,
@@ -64,7 +64,7 @@ impl Display for DatatTypeField {
 /// ; data type
 /// (declare-datatypes ((State 0))) ((State/State (State/State/Field Int)))
 ///
-#[derive(Hash)]
+#[derive(Hash, PartialEq, Eq)]
 pub struct DataType {
     /// the name of the datatype
     name: String,
