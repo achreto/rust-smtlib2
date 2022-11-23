@@ -49,7 +49,7 @@ use super::Formatter;
 // an attributed expression: ( ! <expr> <attribute>+)
 
 /// Binds the expression to a variable
-#[derive(Clone, Hash, PartialEq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct VarBinding {
     symbol: String,
     term: Term,
@@ -104,7 +104,7 @@ impl fmt::Display for SortedVar {
     }
 }
 
-#[derive(Clone, Hash, PartialEq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct Pattern {
     pub symbols: Vec<String>,
 }
@@ -138,7 +138,7 @@ impl fmt::Display for Pattern {
     }
 }
 
-#[derive(Clone, Hash, PartialEq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct MatchCase {
     pattern: Pattern,
     term: Term,
