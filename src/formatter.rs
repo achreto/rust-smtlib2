@@ -44,16 +44,31 @@ pub struct Formatter<'a> {
 
     /// The current indentation level
     spaces: usize,
+
+    /// whether to
+    compact: bool,
+
+    /// the current identation level
+    indent: usize,
 }
 
 impl<'a> Formatter<'a> {
     /// Returns a new formatter instance.
-    pub fn new(dst: &'a mut String) -> Self {
-        Self { dst, spaces: 0 }
+    pub fn new(dst: &'a mut String, compact: bool) -> Self {
+        Self {
+            dst,
+            spaces: 0,
+            compact,
+            indent: if compact { 0 } else { DEFAULT_INDENT },
+        }
     }
 
-    pub fn get_indent(&self) -> usize {
+    pub const fn get_indent(&self) -> usize {
         self.spaces
+    }
+
+    pub const fn compact(&self) -> bool {
+        self.compact
     }
 
     /// Wraps the given function in a a C block. { ...}
@@ -76,9 +91,9 @@ impl<'a> Formatter<'a> {
     where
         F: FnOnce(&mut Self) -> R,
     {
-        self.spaces += DEFAULT_INDENT;
+        self.spaces += self.indent;
         let ret = f(self);
-        self.spaces -= DEFAULT_INDENT;
+        self.spaces -= self.indent;
         ret
     }
 

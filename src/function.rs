@@ -84,8 +84,10 @@ impl Function {
 
     /// Formats the variant using the given formatter.
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
-        if let Some(c) = &self.comment {
-            writeln!(fmt, ";; {}", c)?;
+        if !fmt.compact() {
+            if let Some(c) = &self.comment {
+                writeln!(fmt, ";; {}", c)?;
+            }
         }
 
         if self.body.is_some() {
@@ -105,21 +107,27 @@ impl Function {
             }
         }
 
-        write!(fmt, ") {}", self.rettype)?;
-        if let Some(body) = &self.body {
+        write!(fmt, ") {} ", self.rettype)?;
+        if !fmt.compact() {
             writeln!(fmt)?;
-            fmt.indent(|fmt| body.fmt(fmt))?;
-            writeln!(fmt, "\n)\n")
-        } else {
-            writeln!(fmt, ")\n")
         }
+        if let Some(body) = &self.body {
+            if fmt.compact() {
+                fmt.indent(|fmt| body.fmt(fmt))?;
+            } else {
+                writeln!(fmt)?;
+                fmt.indent(|fmt| body.fmt(fmt))?;
+                writeln!(fmt)?;
+            }
+        }
+        writeln!(fmt, ")")
     }
 }
 
 impl Display for Function {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret)).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
         write!(f, "{}", ret)
     }
 }

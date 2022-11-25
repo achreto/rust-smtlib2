@@ -119,7 +119,7 @@ impl Smt2File {
 
     // formats the current context into smtlib2 syntax
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
-        if !self.doc.is_empty() {
+        if !self.doc.is_empty() && !fmt.compact() {
             write!(fmt, "; {}\n\n\n", self.doc)?;
         }
 
@@ -134,10 +134,10 @@ impl Smt2File {
         let mut file = File::create(path).expect("failed to create the file");
 
         let mut buf = String::new();
-        self.fmt(&mut Formatter::new(&mut buf))
+        self.fmt(&mut Formatter::new(&mut buf, false))
             .expect("failed to format smtlib2 file");
         other
-            .fmt(&mut Formatter::new(&mut buf))
+            .fmt(&mut Formatter::new(&mut buf, false))
             .expect("failed to format smtlib2 file");
 
         file.write_all(buf.as_bytes())
@@ -173,7 +173,7 @@ impl Smt2File {
 impl fmt::Display for Smt2File {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret))?;
+        self.fmt(&mut Formatter::new(&mut ret, false))?;
         write!(f, "{}", ret)
     }
 }

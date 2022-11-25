@@ -50,7 +50,7 @@ impl VarDecl {
 impl Display for VarDecl {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret)).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
         write!(f, "{}", ret)
     }
 }

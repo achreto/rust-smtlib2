@@ -70,7 +70,7 @@ impl VarBinding {
 impl fmt::Display for VarBinding {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret)).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
         write!(f, "{}", ret)
     }
 }
@@ -99,7 +99,8 @@ impl SortedVar {
 impl fmt::Display for SortedVar {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret), true).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false), true)
+            .unwrap();
         write!(f, "{}", ret)
     }
 }
@@ -133,7 +134,7 @@ impl Pattern {
 impl fmt::Display for Pattern {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret)).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
         write!(f, "{}", ret)
     }
 }
@@ -161,7 +162,7 @@ impl MatchCase {
 impl fmt::Display for MatchCase {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret)).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
         write!(f, "{}", ret)
     }
 }
@@ -199,7 +200,7 @@ impl Attribute {
 impl fmt::Display for Attribute {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret)).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
         write!(f, "{}", ret)
     }
 }
@@ -410,23 +411,33 @@ impl Term {
                 // } else {
                 //     writeln!(fmt, "({} ", s)?;
                 // }
-                writeln!(fmt, "({} ", s)?;
+                write!(fmt, "({} ", s)?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
                 fmt.indent(|fmt| {
-                    for (_i, arg) in args.iter().enumerate() {
-                        // if oneline && i > 0 {
-                        //     write!(fmt, " ")?;
-                        // }
-                        arg.fmt(fmt)?;
-                        // if !oneline {
-                        writeln!(fmt)?;
-                        // }
+                    if fmt.compact() {
+                        for (i, arg) in args.iter().enumerate() {
+                            if i > 0 {
+                                write!(fmt, " ")?;
+                            }
+                            arg.fmt(fmt)?;
+                        }
+                    } else {
+                        for arg in args.iter() {
+                            arg.fmt(fmt)?;
+                            writeln!(fmt)?;
+                        }
                     }
                     Ok(())
                 })?;
                 write!(fmt, ")")
             }
             Term::Forall(vars, term) => {
-                writeln!(fmt, "(forall (")?;
+                write!(fmt, "(forall (")?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
                 fmt.indent(|fmt| {
                     for (i, var) in vars.iter().enumerate() {
                         if i > 0 {
@@ -436,12 +447,18 @@ impl Term {
                     }
                     Ok(())
                 })?;
-                writeln!(fmt, ") ")?;
+                write!(fmt, ") ")?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
                 fmt.indent(|fmt| term.fmt(fmt))?;
-                write!(fmt, "\n)")
+                write!(fmt, ")")
             }
             Term::Exists(vars, term) => {
-                writeln!(fmt, "(exists (")?;
+                write!(fmt, "(exists (")?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
                 fmt.indent(|fmt| {
                     for (i, var) in vars.iter().enumerate() {
                         if i > 0 {
@@ -452,30 +469,61 @@ impl Term {
                     Ok(())
                 })?;
                 write!(fmt, ") ")?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
                 fmt.indent(|fmt| term.fmt(fmt))?;
-                write!(fmt, "\n)")
+                write!(fmt, ")")
             }
             Term::Let(vars, expr) => {
-                writeln!(fmt, "(let (")?;
+                write!(fmt, "(let (")?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
                 fmt.indent(|fmt| {
-                    for var in vars.iter() {
-                        var.fmt(fmt)?;
-                        writeln!(fmt)?;
+                    if !fmt.compact() {
+                        for var in vars.iter() {
+                            var.fmt(fmt)?;
+                            writeln!(fmt)?;
+                        }
+                    } else {
+                        for (i, var) in vars.iter().enumerate() {
+                            if i > 0 {
+                                write!(fmt, " ")?;
+                            }
+                            var.fmt(fmt)?;
+                        }
                     }
+
                     Ok(())
                 })?;
                 write!(fmt, ") ")?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
                 expr.fmt(fmt)?;
                 write!(fmt, ")")
             }
             Term::Match(term, cases) => {
-                writeln!(fmt, "(match ")?;
+                write!(fmt, "(match ")?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
                 term.fmt(fmt)?;
                 writeln!(fmt, " (")?;
                 fmt.indent(|f| {
-                    for case in cases.iter() {
-                        case.fmt(f)?;
-                        writeln!(f)?;
+                    if !f.compact() {
+                        for case in cases.iter() {
+                            case.fmt(f)?;
+                            writeln!(f)?;
+                        }
+                    } else {
+                        for (i, case) in cases.iter().enumerate() {
+                            if i > 0 {
+                                write!(f, " ")?;
+                            }
+                            case.fmt(f)?;
+                        }
                     }
                     Ok(())
                 })?;
@@ -483,7 +531,10 @@ impl Term {
                 write!(fmt, ")")
             }
             Term::AttributedTerm(term, attrs) => {
-                writeln!(fmt, "(! ")?;
+                write!(fmt, "(! ")?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
                 fmt.indent(|f| term.fmt(f))?;
                 for (i, a) in attrs.iter().enumerate() {
                     if i != 0 {
@@ -491,7 +542,7 @@ impl Term {
                     }
                     a.fmt(fmt)?;
                 }
-                writeln!(fmt, ")")
+                write!(fmt, ")")
             }
         }
     }
@@ -500,7 +551,7 @@ impl Term {
 impl fmt::Display for Term {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret)).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
         write!(f, "{}", ret)
     }
 }

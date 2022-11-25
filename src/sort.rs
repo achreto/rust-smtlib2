@@ -44,14 +44,14 @@ impl SortDecl {
 
     // formats the current context into smtlib2 syntax
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
-        write!(fmt, "(declare-sort {} {})", self.name, self.arity)
+        writeln!(fmt, "(declare-sort {} {})", self.name, self.arity)
     }
 }
 
 impl fmt::Display for SortDecl {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret))?;
+        self.fmt(&mut Formatter::new(&mut ret, false))?;
         writeln!(f, "{}", ret)
     }
 }
@@ -89,7 +89,7 @@ impl SortDef {
 impl fmt::Display for SortDef {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret))?;
+        self.fmt(&mut Formatter::new(&mut ret, false))?;
         write!(f, "{}", ret)
     }
 }

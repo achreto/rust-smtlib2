@@ -75,7 +75,7 @@ impl Smt2Option {
 impl fmt::Display for Smt2Option {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret))?;
+        self.fmt(&mut Formatter::new(&mut ret, false))?;
         write!(f, "{}", ret)
     }
 }

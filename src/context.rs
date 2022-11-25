@@ -266,15 +266,22 @@ impl Smt2Context {
         for cmd in &self.commands {
             match cmd {
                 Assert(term) => {
-                    writeln!(fmt, "(assert ")?;
+                    write!(fmt, "(assert ")?;
+                    if !fmt.compact() {
+                        writeln!(fmt)?;
+                    }
                     fmt.indent(|fmt| term.fmt(fmt))?;
-                    writeln!(fmt, "\n)")?;
+                    if !fmt.compact() {
+                        writeln!(fmt)?;
+                    }
+                    writeln!(fmt, ")")?;
                 }
                 CheckSat => writeln!(fmt, "(check-sat)")?,
                 CheckSatAssuming(prop_literals) => {
                     write!(fmt, "(check-sat-assuming (")?;
                     for prop_literal in prop_literals {
                         prop_literal.fmt(fmt)?;
+                        write!(fmt, " ")?;
                     }
                     writeln!(fmt, "))")?;
                 }
@@ -311,11 +318,11 @@ impl Smt2Context {
                     writeln!(fmt, "))")?;
                 }
                 Level(smt2_context) => {
-                    writeln!(fmt, "\n(push)")?;
+                    writeln!(fmt, "(push)")?;
                     smt2_context.fmt(fmt)?;
-                    writeln!(fmt, "(pop)\n")?;
+                    writeln!(fmt, "(pop)")?;
                 }
-                Reset => writeln!(fmt, "\n\n(reset)\n\n")?,
+                Reset => writeln!(fmt, "(reset)")?,
                 ResetAssertions => writeln!(fmt, "(reset-assertions)")?,
                 SetInfo(info_flag) => {
                     write!(fmt, "(set-info ")?;
@@ -329,14 +336,22 @@ impl Smt2Context {
                     writeln!(fmt, ")")?;
                 }
                 Section(s) => {
-                    let sep = ";".repeat(100);
-                    writeln!(fmt, "\n;{}\n; {}\n;{}\n", sep, s, sep)?;
+                    if !fmt.compact() {
+                        let sep = ";".repeat(100);
+                        writeln!(fmt, "\n;{}\n; {}\n;{}\n", sep, s, sep)?;
+                    }
                 }
                 SubSection(s) => {
-                    let sep = "-".repeat(100);
-                    writeln!(fmt, "\n; {}\n;{}\n", s, sep)?;
+                    if !fmt.compact() {
+                        let sep = "-".repeat(100);
+                        writeln!(fmt, "\n; {}\n;{}\n", s, sep)?;
+                    }
                 }
-                Comment(comment) => writeln!(fmt, "; {}", comment)?,
+                Comment(comment) => {
+                    if !fmt.compact() {
+                        writeln!(fmt, "; {}", comment)?;
+                    }
+                }
                 Raw(raw) => writeln!(fmt, "{}", raw)?,
             }
         }
@@ -344,9 +359,9 @@ impl Smt2Context {
     }
 
     /// creates a code
-    pub fn to_code(&self) -> String {
+    pub fn to_code(&self, compact: bool) -> String {
         let mut ret = String::with_capacity((self.commands.len() + self.numcmd) * 200);
-        let mut fmt = Formatter::new(&mut ret);
+        let mut fmt = Formatter::new(&mut ret, compact);
         self.fmt(&mut fmt).expect("formatting failed");
         ret
     }
@@ -355,7 +370,7 @@ impl Smt2Context {
 impl fmt::Display for Smt2Context {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret)).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
         write!(f, "{}", ret)
     }
 }

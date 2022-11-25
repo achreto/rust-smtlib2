@@ -58,7 +58,7 @@ impl PropLiteral {
 impl fmt::Display for PropLiteral {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret))?;
+        self.fmt(&mut Formatter::new(&mut ret, false))?;
         write!(f, "{}", ret)
     }
 }

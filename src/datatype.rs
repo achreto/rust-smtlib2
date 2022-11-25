@@ -52,7 +52,7 @@ impl DatatTypeField {
 impl Display for DatatTypeField {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret)).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
         write!(f, "{}", ret)
     }
 }
@@ -142,15 +142,21 @@ impl DataType {
 
     /// Formats the variant using the given formatter.
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
-        if let Some(c) = &self.comment {
-            writeln!(fmt, ";; {}", c)?;
+        if !fmt.compact() {
+            if let Some(c) = &self.comment {
+                writeln!(fmt, ";; {}", c)?;
+            }
         }
 
-        writeln!(
+        write!(
             fmt,
             "(declare-datatypes (({}_t {})) (",
             self.name, self.arty
         )?;
+
+        if !fmt.compact() {
+            writeln!(fmt)?;
+        }
 
         fmt.indent(|fmt| {
             write!(fmt, "(({} ", self.name)?;
@@ -162,16 +168,15 @@ impl DataType {
             }
             write!(fmt, "))")
         })?;
-        writeln!(fmt, "))")?;
 
-        Ok(())
+        writeln!(fmt, "))")
     }
 }
 
 impl Display for DataType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
-        self.fmt(&mut Formatter::new(&mut ret)).unwrap();
+        self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
         write!(f, "{}", ret)
     }
 }
