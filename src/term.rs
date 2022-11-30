@@ -546,6 +546,12 @@ impl Term {
             }
         }
     }
+
+    pub fn to_string_compact(&self) -> String {
+        let mut ret = String::new();
+        self.fmt(&mut Formatter::new(&mut ret, true)).unwrap();
+        ret
+    }
 }
 
 impl fmt::Display for Term {
