@@ -54,7 +54,7 @@ impl InfoFlag {
             Name => write!(fmt, ":name"),
             ReasonUnknown => write!(fmt, ":reason-unknown"),
             Version => write!(fmt, ":version"),
-            Keyword(s) => write!(fmt, ":{}", s),
+            Keyword(s) => write!(fmt, ":{s}"),
         }
     }
 }
@@ -63,6 +63,6 @@ impl fmt::Display for InfoFlag {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false))?;
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }

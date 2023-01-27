@@ -49,8 +49,8 @@ impl PropLiteral {
 
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         match self {
-            Self::True(s) => write!(fmt, "{}", s),
-            Self::Not(s) => write!(fmt, "(not {})", s),
+            Self::True(s) => write!(fmt, "{s}"),
+            Self::Not(s) => write!(fmt, "(not {s})"),
         }
     }
 }
@@ -59,6 +59,6 @@ impl fmt::Display for PropLiteral {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false))?;
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }

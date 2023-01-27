@@ -71,7 +71,7 @@ impl fmt::Display for VarBinding {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }
 
@@ -101,7 +101,7 @@ impl fmt::Display for SortedVar {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false), true)
             .unwrap();
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }
 
@@ -121,9 +121,9 @@ impl Pattern {
         } else {
             for (i, sym) in self.symbols.iter().enumerate() {
                 if i == 0 {
-                    write!(fmt, "({}", sym)?;
+                    write!(fmt, "({sym}")?;
                 } else {
-                    write!(fmt, " {}", sym)?;
+                    write!(fmt, " {sym}")?;
                 }
             }
             write!(fmt, ")")
@@ -135,7 +135,7 @@ impl fmt::Display for Pattern {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }
 
@@ -163,7 +163,7 @@ impl fmt::Display for MatchCase {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }
 
@@ -191,7 +191,7 @@ impl Attribute {
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         write!(fmt, ":{} ", self.keyword)?;
         if let Some(value) = &self.value {
-            write!(fmt, "{}", value)?;
+            write!(fmt, "{value}")?;
         }
         Ok(())
     }
@@ -201,7 +201,7 @@ impl fmt::Display for Attribute {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }
 
@@ -243,12 +243,12 @@ impl Term {
     }
 
     pub fn bv_zero_extend(term: Term, num: u64) -> Self {
-        let ident = format!("(_ zero_extend {})", num);
+        let ident = format!("(_ zero_extend {num})");
         Term::FunctionApplication(ident, vec![term])
     }
 
     pub fn bv_extract(term: Term, s: u64, e: u64) -> Self {
-        let ident = format!("(_ extract {} {})", e, s);
+        let ident = format!("(_ extract {e} {s})");
         Term::FunctionApplication(ident, vec![term])
     }
 
@@ -389,9 +389,9 @@ impl Term {
     /// Formats the variant using the given formatter.
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         match self {
-            Term::Numeral(n) => write!(fmt, "#x{:016x}", n),
+            Term::Numeral(n) => write!(fmt, "#x{n:016x}"),
             // Term::Decimal(n) => write!(fmt, "{}", n),
-            Term::String(s) => write!(fmt, "\"{}\"", s),
+            Term::String(s) => write!(fmt, "\"{s}\""),
             Term::Binary(b) => {
                 if *b {
                     write!(fmt, "true")
@@ -400,7 +400,7 @@ impl Term {
                 }
             }
             // Term::Hex(s) => write!(fmt, "{}", s),
-            Term::Identifier(s) => write!(fmt, "{}", s),
+            Term::Identifier(s) => write!(fmt, "{s}"),
             Term::QualifiedIdentifier(s) => {
                 write!(fmt, "(as {} {})", s.ident, s.sort)
             }
@@ -411,7 +411,7 @@ impl Term {
                 // } else {
                 //     writeln!(fmt, "({} ", s)?;
                 // }
-                write!(fmt, "({} ", s)?;
+                write!(fmt, "({s} ")?;
                 if !fmt.compact() {
                     writeln!(fmt)?;
                 }
@@ -558,7 +558,7 @@ impl fmt::Display for Term {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }
 

@@ -54,19 +54,19 @@ impl Smt2Option {
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         use Smt2Option::*;
         match self {
-            DiagnosticOutputChannel(s) => write!(fmt, ":diagnostic-output-channel {}", s),
-            GlobalDeclarations(b) => write!(fmt, ":global-declarations {}", b),
-            InteractiveMode(b) => write!(fmt, ":interactive-mode {}", b),
-            ProduceAssertions(b) => write!(fmt, ":produce-assertions {}", b),
-            ProduceAssignments(b) => write!(fmt, ":produce-assignments {}", b),
-            ProduceModels(b) => write!(fmt, ":produce-models {}", b),
-            ProduceProofs(b) => write!(fmt, ":produce-proofs {}", b),
-            ProduceUnsatAssumptions(b) => write!(fmt, ":produce-unsat-assumptions {}", b),
-            ProduceUnsatCores(b) => write!(fmt, ":produce-unsat-cores {}", b),
-            RandomSeed(u) => write!(fmt, ":random-seed {}", u),
-            RegularOutputChannel(s) => write!(fmt, ":regular-output-channel {}", s),
-            ReproducibleResourceLimit(u) => write!(fmt, ":reproducible-resource-limit {}", u),
-            Verbosity(u) => write!(fmt, ":verbosity {}", u),
+            DiagnosticOutputChannel(s) => write!(fmt, ":diagnostic-output-channel {s}"),
+            GlobalDeclarations(b) => write!(fmt, ":global-declarations {b}"),
+            InteractiveMode(b) => write!(fmt, ":interactive-mode {b}"),
+            ProduceAssertions(b) => write!(fmt, ":produce-assertions {b}"),
+            ProduceAssignments(b) => write!(fmt, ":produce-assignments {b}"),
+            ProduceModels(b) => write!(fmt, ":produce-models {b}"),
+            ProduceProofs(b) => write!(fmt, ":produce-proofs {b}"),
+            ProduceUnsatAssumptions(b) => write!(fmt, ":produce-unsat-assumptions {b}"),
+            ProduceUnsatCores(b) => write!(fmt, ":produce-unsat-cores {b}"),
+            RandomSeed(u) => write!(fmt, ":random-seed {u}"),
+            RegularOutputChannel(s) => write!(fmt, ":regular-output-channel {s}"),
+            ReproducibleResourceLimit(u) => write!(fmt, ":reproducible-resource-limit {u}"),
+            Verbosity(u) => write!(fmt, ":verbosity {u}"),
             Attribute(s) => s.fmt(fmt),
         }
     }
@@ -76,6 +76,6 @@ impl fmt::Display for Smt2Option {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false))?;
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }

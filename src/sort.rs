@@ -52,7 +52,7 @@ impl fmt::Display for SortDecl {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false))?;
-        writeln!(f, "{}", ret)
+        writeln!(f, "{ret}")
     }
 }
 
@@ -80,7 +80,7 @@ impl SortDef {
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         write!(fmt, "(define-sort {} (", self.name)?;
         for param in &self.params {
-            write!(fmt, "({})", param)?;
+            write!(fmt, "({param})")?;
         }
         writeln!(fmt, ") {})", self.def)
     }
@@ -90,7 +90,7 @@ impl fmt::Display for SortDef {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false))?;
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }
 
@@ -123,8 +123,8 @@ impl Sort {
 impl fmt::Display for Sort {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Sort::Declare(sort) => write!(f, "{}", sort),
-            Sort::Define(sort) => write!(f, "{}", sort),
+            Sort::Declare(sort) => write!(f, "{sort}"),
+            Sort::Define(sort) => write!(f, "{sort}"),
         }
     }
 }

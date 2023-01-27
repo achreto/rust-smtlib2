@@ -289,7 +289,7 @@ impl Smt2Context {
                 DataType(datatype) => datatype.fmt(fmt)?,
                 Function(function) => function.fmt(fmt)?,
                 Sort(sort) => sort.fmt(fmt)?,
-                Echo(message) => writeln!(fmt, "(echo \"{}\")", message)?,
+                Echo(message) => writeln!(fmt, "(echo \"{message}\")")?,
                 Exit => writeln!(fmt, "(exit)")?,
                 GetAssertions => writeln!(fmt, "(get-assertions)")?,
                 GetAssignment => writeln!(fmt, "(get-assignment)")?,
@@ -329,7 +329,7 @@ impl Smt2Context {
                     info_flag.fmt(fmt)?;
                     writeln!(fmt, ")")?;
                 }
-                SetLogic(logic) => writeln!(fmt, "(set-logic {})", logic)?,
+                SetLogic(logic) => writeln!(fmt, "(set-logic {logic})")?,
                 SetOption(option) => {
                     write!(fmt, "(set-option ")?;
                     option.fmt(fmt)?;
@@ -338,21 +338,21 @@ impl Smt2Context {
                 Section(s) => {
                     if !fmt.compact() {
                         let sep = ";".repeat(100);
-                        writeln!(fmt, "\n;{}\n; {}\n;{}\n", sep, s, sep)?;
+                        writeln!(fmt, "\n;{sep}\n; {s}\n;{sep}\n")?;
                     }
                 }
                 SubSection(s) => {
                     if !fmt.compact() {
                         let sep = "-".repeat(100);
-                        writeln!(fmt, "\n; {}\n;{}\n", s, sep)?;
+                        writeln!(fmt, "\n; {s}\n;{sep}\n")?;
                     }
                 }
                 Comment(comment) => {
                     if !fmt.compact() {
-                        writeln!(fmt, "; {}", comment)?;
+                        writeln!(fmt, "; {comment}")?;
                     }
                 }
-                Raw(raw) => writeln!(fmt, "{}", raw)?,
+                Raw(raw) => writeln!(fmt, "{raw}")?,
             }
         }
         Ok(())
@@ -371,7 +371,7 @@ impl fmt::Display for Smt2Context {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }
 

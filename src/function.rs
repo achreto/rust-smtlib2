@@ -86,7 +86,7 @@ impl Function {
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         if !fmt.compact() {
             if let Some(c) = &self.comment {
-                writeln!(fmt, ";; {}", c)?;
+                writeln!(fmt, ";; {c}")?;
             }
         }
 
@@ -128,6 +128,6 @@ impl Display for Function {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut ret = String::new();
         self.fmt(&mut Formatter::new(&mut ret, false)).unwrap();
-        write!(f, "{}", ret)
+        write!(f, "{ret}")
     }
 }
