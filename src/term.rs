@@ -225,6 +225,8 @@ pub enum Term {
     Forall(Vec<SortedVar>, Box<Term>),
     Exists(Vec<SortedVar>, Box<Term>),
     Let(Vec<VarBinding>, Box<Term>),
+    #[cfg(feature = "z3")]
+    Lambda(Vec<SortedVar>, Box<Term>),
     Match(Box<Term>, Vec<MatchCase>),
     AttributedTerm(Box<Term>, Vec<Attribute>),
 }
@@ -277,6 +279,11 @@ impl Term {
 
     pub fn letexpr(vars: Vec<VarBinding>, expr: Term) -> Self {
         Term::Let(vars, Box::new(expr))
+    }
+
+    #[cfg(feature = "z3")]
+    pub fn lambda(args: Vec<SortedVar>, body: Term) -> Self {
+        Term::Lambda(args, Box::new(body))
     }
 
     pub fn fn_apply(name: String, args: Vec<Term>) -> Self {
@@ -357,6 +364,11 @@ impl Term {
 
     pub fn bvnot(expr: Term) -> Self {
         Term::FunctionApplication("bvnot".to_string(), vec![expr])
+    }
+
+    pub fn select(array: Term, mut args: Vec<Term>) -> Term {
+        args.insert(0, array);
+        Term::FunctionApplication("select".to_string(), args)
     }
 
     pub fn eq(self, other: Term) -> Term {
@@ -502,6 +514,28 @@ impl Term {
                     writeln!(fmt)?;
                 }
                 expr.fmt(fmt)?;
+                write!(fmt, ")")
+            }
+            #[cfg(feature = "z3")]
+            Term::Lambda(args, body) => {
+                write!(fmt, "(lambda (")?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
+                fmt.indent(|fmt| {
+                    for (i, arg) in args.iter().enumerate() {
+                        if i > 0 {
+                            write!(fmt, " ")?;
+                        }
+                        arg.fmt(fmt, true)?;
+                    }
+                    Ok(())
+                })?;
+                write!(fmt, ") ")?;
+                if !fmt.compact() {
+                    writeln!(fmt)?;
+                }
+                fmt.indent(|fmt| body.fmt(fmt))?;
                 write!(fmt, ")")
             }
             Term::Match(term, cases) => {
