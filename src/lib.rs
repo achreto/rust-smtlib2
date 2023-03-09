@@ -42,6 +42,8 @@ mod propliteral;
 mod sort;
 mod term;
 mod variable;
+#[cfg(feature = "z3")]
+mod z3;
 
 pub use context::{Smt2Command, Smt2Context};
 pub use datatype::DataType;
@@ -53,6 +55,8 @@ pub use propliteral::PropLiteral;
 pub use sort::{Sort, SortDecl, SortDef};
 pub use term::{Attribute, MatchCase, Pattern, SortedVar, Term, VarBinding};
 pub use variable::VarDecl;
+#[cfg(feature = "z3")]
+pub use z3::theories::seq;
 
 /// defines a smtlib2 expression
 
