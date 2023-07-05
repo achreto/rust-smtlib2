@@ -32,7 +32,7 @@ use std::hash::Hash;
 use super::Formatter;
 
 /// prop literals
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub enum PropLiteral {
     True(String),
     Not(String),

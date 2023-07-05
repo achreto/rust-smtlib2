@@ -30,7 +30,7 @@ use std::hash::Hash;
 
 use super::Formatter;
 
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct VarDecl {
     pub name: String,
     pub ty: String,
