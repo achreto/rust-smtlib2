@@ -34,7 +34,7 @@ use super::{
     VarDecl,
 };
 
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub enum Smt2Command {
     Assert(Term),
     CheckSat,
@@ -66,7 +66,7 @@ pub enum Smt2Command {
     Raw(String),
 }
 
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct Smt2Context {
     commands: Vec<Smt2Command>,
     numcmd: usize,

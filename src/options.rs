@@ -32,7 +32,7 @@ use std::hash::Hash;
 use super::Attribute;
 use super::Formatter;
 
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub enum Smt2Option {
     DiagnosticOutputChannel(String),
     GlobalDeclarations(bool),

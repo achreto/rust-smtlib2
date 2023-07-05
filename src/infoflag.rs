@@ -31,7 +31,7 @@ use std::hash::Hash;
 
 use super::Formatter;
 
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub enum InfoFlag {
     AllStatistics,
     AssertionStackLevels,
