@@ -101,7 +101,7 @@ impl DataType {
 
     pub fn to_field_accessor(&self) -> Smt2Context {
         let mut smt = Smt2Context::new();
-        for (_i, field) in self.fields.iter().enumerate() {
+        for field in self.fields.iter() {
             let name = format!("{}.get!", field.name);
             let mut f = Function::new(name, field.ty.clone());
             f.add_arg("s@".to_string(), format!("{}_t", self.name));
