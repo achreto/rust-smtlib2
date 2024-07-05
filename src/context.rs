@@ -358,12 +358,17 @@ impl Smt2Context {
         Ok(())
     }
 
-    /// creates a code
+    /// returns a string of formatted SMT queries
     pub fn to_code(&self, compact: bool) -> String {
         let mut ret = String::with_capacity((self.commands.len() + self.numcmd) * 200);
-        let mut fmt = Formatter::new(&mut ret, compact);
-        self.fmt(&mut fmt).expect("formatting failed");
+        self.to_code_into(compact, &mut ret);
         ret
+    }
+
+    /// formats the SMT queries into the given string buffer
+    pub fn to_code_into(&self, compact: bool, ret: &mut String) {
+        let mut fmt = Formatter::new(ret, compact);
+        self.fmt(&mut fmt).expect("formatting failed");
     }
 }
 
