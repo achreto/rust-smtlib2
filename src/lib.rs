@@ -59,8 +59,6 @@ pub use variable::VarDecl;
 pub use z3::theories::seq;
 
 /// defines a smtlib2 expression
-
-/// defines a rosette file
 pub struct Smt2File {
     /// the pathname of the file
     path: PathBuf,

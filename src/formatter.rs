@@ -71,21 +71,6 @@ impl<'a> Formatter<'a> {
         self.compact
     }
 
-    /// Wraps the given function in a a C block. { ...}
-    // pub fn block<F>(&mut self, f: F) -> fmt::Result
-    // where
-    //     F: FnOnce(&mut Self) -> fmt::Result,
-    // {
-    //     if !self.is_start_of_line() {
-    //         write!(self, " ")?;
-    //     }
-
-    //     writeln!(self, "{{")?;
-    //     self.indent(f)?;
-    //     write!(self, "}}")?;
-    //     Ok(())
-    // }
-
     /// Formats the function with an increased indentation level
     pub fn indent<F, R>(&mut self, f: F) -> R
     where
@@ -110,7 +95,7 @@ impl<'a> Formatter<'a> {
     }
 }
 
-impl<'a> fmt::Write for Formatter<'a> {
+impl fmt::Write for Formatter<'_> {
     fn write_str(&mut self, s: &str) -> fmt::Result {
         let mut first = true;
         let mut should_indent = self.is_start_of_line();
